@@ -19,6 +19,7 @@ class BlackboardEntryRead(BaseModel):
     id: uuid.UUID
     task_id: uuid.UUID
     key: str
+    scope: str
     value: Any
     source_refs: Any
     created_at: datetime

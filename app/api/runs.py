@@ -1,12 +1,12 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.api.schemas import BlackboardEntryRead, RunCreate, RunCreateResponse, RunRead
+from app.db.queries import visible_entries
 from app.db.session import get_session
-from app.models import BlackboardEntry, Run
+from app.models import Run
 
 router = APIRouter(prefix="/runs", tags=["runs"])
 
@@ -30,10 +30,7 @@ async def get_run(
     if run is None:
         raise HTTPException(status_code=404, detail="Run not found")
 
-    result = await session.execute(
-        select(BlackboardEntry).where(BlackboardEntry.run_id == run_id)
-    )
-    entries = result.scalars().all()
+    entries = await visible_entries(session, run_id)
 
     return RunRead(
         id=run.id,

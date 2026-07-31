@@ -3,6 +3,9 @@ from app.models import BlackboardEntry
 
 
 class EchoAgent(Agent):
+    reads: frozenset[str] = frozenset()
+    produces: frozenset[str] = frozenset({"echo"})
+
     async def run(self, ctx: AgentContext) -> list[BlackboardEntry]:
         entry = BlackboardEntry(
             run_id=ctx.run_id,
