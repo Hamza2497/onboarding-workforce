@@ -3,7 +3,7 @@ import sys
 
 from sqlalchemy import inspect
 
-from app.db.session import engine
+from tests.conftest import test_engine
 
 
 def test_alembic_upgrade_head_applies_cleanly():
@@ -16,7 +16,7 @@ def test_alembic_upgrade_head_applies_cleanly():
 
 
 async def test_expected_tables_exist():
-    async with engine.connect() as conn:
+    async with test_engine.connect() as conn:
         table_names = await conn.run_sync(lambda sync_conn: inspect(sync_conn).get_table_names())
 
     assert {"runs", "tasks", "blackboard_entries"}.issubset(set(table_names))
